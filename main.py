@@ -1,10 +1,7 @@
 import os
 from dotenv import load_dotenv
 from google import genai
-
-
-
-
+import argparse
 
 
 
@@ -15,17 +12,20 @@ def main():
     if api_key == None:
         raise Exception ("API key not found")
     client = genai.Client(api_key=api_key)
-    prompt = ("Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum.")
+
+    parser = argparse.ArgumentParser(description="Ai Agent")
+    parser.add_argument("user_prompt", type=str, help="You're out of luck m8")
+    args = parser.parse_args()
+
+    
     response = client.models.generate_content(
-        model='gemini-2.5-flash', contents=prompt
+        model='gemini-2.5-flash', contents=args.user_prompt
     )
-
-
     
     if response.usage_metadata == None:
         raise RuntimeError ("API request failed")
     
-    print(f"User prompt: {prompt}")
+    print(f"User prompt: {args.user_prompt}")
     print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
     print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     print(f"Response: \n{response.text}")
